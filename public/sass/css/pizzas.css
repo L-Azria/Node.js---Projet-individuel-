@@ -10,6 +10,7 @@ header {
 header nav {
   border: 1px solid gray;
   margin-left: 1rem;
+  padding: 10px;
 }
 header a {
   color: black;
@@ -17,13 +18,19 @@ header a {
   padding: 0.5rem;
   font-size: 1.5rem;
 }
+header a:hover {
+  border-top: 2px solid green;
+}
 header img {
   width: 4rem;
+}
+header .ok {
+  background-color: rgb(123, 178, 123);
 }
 
 main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 }
 main button {
@@ -40,6 +47,18 @@ main table {
 }
 main table #row1 {
   background-color: rgb(40, 188, 40);
+}
+main > div:nth-child(1) {
+  border: 1px solid black;
+  width: 75%;
+  padding: 1rem;
+  margin-right: 4px;
+}
+main > div:nth-child(2) {
+  width: 17%;
+  background-color: gray;
+  border: 1px solid black;
+  text-align: center;
 }
 
 /*# sourceMappingURL=pizzas.css.map */

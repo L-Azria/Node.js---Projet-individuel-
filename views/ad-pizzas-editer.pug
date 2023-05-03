@@ -1,0 +1,47 @@
+doctype html
+html
+    head
+        title=Super
+        link(rel="stylesheet" href="/public/sass/css/pizzas.css")
+    body
+        header 
+            img(src="/public/logo.png", alt="")
+            nav 
+                a(href="/admin/users") Utilisateurs
+                a(href="/admin/pizzas" class="ok") Pizzas
+                a(href="/admin/menus") Menus
+                a(href="/admin/desserts") Desserts
+                a(href="/admin/boissons") Boissons
+                a(href="/admin/clients") Clients
+                a(href="/admin/commandes") Commandes
+                a(href="/admin/livreurs" class="ok") Livreurs
+                a(href="/admin/ingredients") Ingrédients
+                a(href="/admin/stats") Statistiques
+                a(href="/admin/promotions") Promotions
+        main
+            div(id=zonePrincipale)
+                    button(type="submit")
+                        a(href="/admin/pizzas") Retour à la page des pizzas
+
+                    h2 Editer la pizza #{pizzas.libelle}
+                    form(action=`/admin/pizzas/editer/${pizzas.id}`, method="post")
+                        div 
+                            input(type="hidden" name="code" value=`${pizzas.code}`)
+                            input(type="hidden" name="libelle" value=`${pizzas.libelle}`)
+                        div
+                            label(for=ingredients) Ingrédients
+                            input(type="text" name="ingredients" id=ingredients value=`${pizzas.ingredients}`)
+                        div
+                            label(for=categorie) Catégorie
+                            input(type="text" name="categorie" id=categorie value=`${pizzas.categorie}`)
+                        div
+                            label(for=prix) Prix
+                            input(type="text" name="prix" id=prix value=`${pizzas.prix}`)
+                        div
+                            label(for=version_pizza) Version pizza
+                            input(type="hidden" name="version_pizza" id=version_pizza value=`${pizzas.version_pizza +1}`)
+
+                        div    
+                            button(type="submit") Editer
+            div(id=zoneActivite)
+                    p Zone activité

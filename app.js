@@ -1,5 +1,7 @@
 import mysql from "mysql2";
 import express from "express";
+import bcrypt from "bcrypt";
+const saltRounds = 10;
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -18,6 +20,8 @@ const pool = mysql.createPool({
 
 const promisePool = pool.promise();
 // La connexion à la base est établie
+
+//PIZZAS
 
 //fonction : permet d'accéder aux données à volonté
 async function listPizzas() {
@@ -41,6 +45,92 @@ async function newPizza(
   return rows;
 }
 
+// editer une pizza
+async function editPizza(
+  code,
+  libelle,
+  ingredients,
+  categorie,
+  prix,
+  version_pizza
+) {
+  const [rows] = await promisePool.execute(
+    "insert into pizzas (code, libelle, ingredients, categorie, prix,version_pizza) values(?,?,?,?,?,?)",
+    [code, libelle, ingredients, categorie, prix, version_pizza]
+  );
+}
+
+//supprimer une pizza
+async function deletePizza(id) {
+  const [row] = await promisePool.execute("delete from pizzas where id=?", [
+    id,
+  ]);
+}
+
+//LIVREURS
+
+//fonction : permet d'accéder aux données des livreurs à volonté
+async function listLivreurs() {
+  const [rows] = await promisePool.execute("select * from livreurs");
+  // console.log(rows);
+  return rows;
+}
+// creer de nouveaux livreurs
+async function newLivreur(nom, prenom) {
+  const [rows] = await promisePool.execute(
+    "insert into livreurs (nom, prenom) values(?,?)",
+    [nom, prenom]
+  );
+  return rows;
+}
+
+// editer un livreur
+async function editLivreur(id, nom, prenom) {
+  const [rows] = await promisePool.execute(
+    "UPDATE livreurs SET nom=?, prenom=? where id=?",
+    [nom, prenom, id]
+  );
+}
+
+//supprimer un livreur
+async function deleteLivreur(id) {
+  const [row] = await promisePool.execute("delete from livreurs where id=?", [
+    id,
+  ]);
+}
+
+//CLIENTS
+
+//fonction : permet d'accéder aux données à volonté
+async function listClients() {
+  const [rows] = await promisePool.execute("select * from clients");
+  // console.log(rows);
+  return rows;
+}
+// creer de nouveaux clients
+async function newClient(nom, prenom, adresse, email, motDePasse) {
+  const [rows] = await promisePool.execute(
+    "insert into clients (nom, prenom, adresse, email, motDePasse) values(?,?,?,?,?)",
+    [nom, prenom, adresse, email, motDePasse]
+  );
+  return rows;
+}
+
+// editer un client
+async function editClient(id, nom, prenom, adresse, email, motDePasse) {
+  const [rows] = await promisePool.execute(
+    "UPDATE clients SET nom=?, prenom=?, adresse=?, email=?, motDePasse=? where id=?",
+    [nom, prenom, adresse, email, motDePasse, id]
+  );
+}
+
+//supprimer un client
+async function deleteClient(id) {
+  const [row] = await promisePool.execute("delete from clients where id=?", [
+    id,
+  ]);
+}
+
 // PARTIE WEB
 //démarrage du serveur
 const port = 6001;
@@ -58,6 +148,8 @@ app.use("/public", express.static("public"));
 app.get("/admin/users", async (req, res) => {
   res.render("ad-users");
 });
+
+//PIZZAS
 
 //page pizzas
 app.get("/admin/pizzas", async (req, res) => {
@@ -91,4 +183,177 @@ app.post("/admin/pizzas/creer", async (req, res) => {
   );
   console.log(`newPizza`);
   res.redirect("/admin/pizzas");
+});
+
+//page editer une pizza
+app.get("/admin/pizzas/editer/:id", async (req, res) => {
+  const [[getPizzaToEdit]] = await promisePool.execute(
+    `select * FROM pizzas where id=?`,
+    [req.params.id]
+  );
+  console.log(getPizzaToEdit);
+
+  res.render("ad-pizzas-editer", { pizzas: getPizzaToEdit });
+});
+
+//récuperer la requête d'editer une pizza
+app.post("/admin/pizzas/editer/:id", async (req, res) => {
+  console.log(req.body);
+  const editedPizzaCode = req.body.code;
+  const editedPizzaLibelle = req.body.libelle;
+  const editedPizzaIngredients = req.body.ingredients;
+  const editedPizzaCategorie = req.body.categorie;
+  const editedPizzaPrix = req.body.prix;
+  const editedPizzaVersion = req.body.version_pizza;
+  const PizzaEdited = await editPizza(
+    editedPizzaCode,
+    editedPizzaLibelle,
+    editedPizzaIngredients,
+    editedPizzaCategorie,
+    editedPizzaPrix,
+    editedPizzaVersion
+  );
+  res.redirect("/admin/pizzas");
+});
+
+//supppression d'une pizza
+app.post("/admin/pizzas/delete/:id", async (req, res) => {
+  const pizzaId = req.params.id;
+  const pizzaDeleted = await deletePizza(pizzaId);
+  console.log(pizzaDeleted);
+  res.redirect("/admin/pizzas");
+});
+
+//LIVREURS
+//page livreurs
+app.get("/admin/livreurs", async (req, res) => {
+  const allLivreurs = await listLivreurs();
+  console.log(allLivreurs);
+  res.render("ad-livreurs", { livreurs: allLivreurs });
+});
+
+//page creer un livreurs
+app.get("/admin/livreurs/creer", async (req, res) => {
+  const allLivreurs = await listLivreurs();
+  console.log(allLivreurs);
+  res.render("ad-livreurs-creer", { livreurs: allLivreurs });
+});
+
+//récuperer la requête de création d'un nouveau livreurs
+app.post("/admin/livreurs/creer", async (req, res) => {
+  const newLivreurNom = req.body.nom;
+  const newLivreurPrenom = req.body.prenom;
+  const livreurAdded = await newLivreur(newLivreurNom, newLivreurPrenom);
+  console.log(`livreurAdded`);
+  res.redirect("/admin/livreurs");
+});
+
+//page editer un livreur
+app.get("/admin/livreurs/editer/:id", async (req, res) => {
+  const [[getLivreurToEdit]] = await promisePool.execute(
+    `select * FROM livreurs where id=?`,
+    [req.params.id]
+  );
+  console.log(getLivreurToEdit);
+
+  res.render("ad-livreurs-editer", { livreurs: getLivreurToEdit });
+});
+
+//récuperer la requête d'editer un livreur
+app.post("/admin/livreurs/editer/:id", async (req, res) => {
+  console.log(req.body);
+  const editedLivreurId = req.params.id;
+  const editedLivreurNom = req.body.nom;
+  const editedLivreurPrenom = req.body.prenom;
+  const livreurEdited = await editLivreur(
+    editedLivreurId,
+    editedLivreurNom,
+    editedLivreurPrenom
+  );
+  res.redirect("/admin/livreurs");
+});
+
+//supppression d'un livreur
+app.post("/admin/livreurs/delete/:id", async (req, res) => {
+  const livreurId = req.params.id;
+  const livreurDeleted = await deleteLivreur(livreurId);
+  console.log(livreurDeleted);
+  res.redirect("/admin/livreurs");
+});
+
+// CLIENTS
+
+//page clients
+app.get("/admin/clients", async (req, res) => {
+  const allClients = await listClients();
+  console.log(allClients);
+  res.render("ad-clients", { clients: allClients });
+});
+
+//page creer un client
+app.get("/admin/clients/creer", async (req, res) => {
+  const allClients = await listClients();
+  console.log(allClients);
+  res.render("ad-clients-creer", { clients: allClients });
+});
+
+//récuperer la requête de création d'un client
+app.post("/admin/clients/creer", async (req, res) => {
+  const newCLientNom = req.body.nom;
+  const newClientPrenom = req.body.prenom;
+  const newClientAdresse = req.body.adresse;
+  const newClientEmail = req.body.email;
+  //  const newClientMotDePasse = req.body.motDePasse;
+
+  const salt = bcrypt.genSaltSync(saltRounds);
+  const newClientMotDePasse = bcrypt.hashSync(req.body.motDePasse, salt);
+
+  const clientAdded = await newClient(
+    newCLientNom,
+    newClientPrenom,
+    newClientAdresse,
+    newClientEmail,
+    newClientMotDePasse
+  );
+  console.log(`clientAdded`);
+  res.redirect("/admin/clients");
+});
+
+//page editer un client
+app.get("/admin/clients/editer/:id", async (req, res) => {
+  const [[getClientToEdit]] = await promisePool.execute(
+    `select * FROM clients where id=?`,
+    [req.params.id]
+  );
+  console.log(getClientToEdit);
+
+  res.render("ad-clients-editer", { clients: getClientToEdit });
+});
+
+//récuperer la requête d'editer un client
+app.post("/admin/clients/editer/:id", async (req, res) => {
+  console.log(req.body);
+  const editedClientId = req.params.id;
+  const editedClientNom = req.body.nom;
+  const editedClientPrenom = req.body.prenom;
+  const editedClientAdresse = req.body.adresse;
+  const editedClientEmail = req.body.email;
+  const editedClientMotDePasse = req.body.motDePasse;
+  const clientEdited = await editClient(
+    editedClientId,
+    editedClientNom,
+    editedClientPrenom,
+    editedClientAdresse,
+    editedClientEmail,
+    editedClientMotDePasse
+  );
+  res.redirect("/admin/clients");
+});
+
+//supppression d'un client
+app.post("/admin/clients/delete/:id", async (req, res) => {
+  const clientId = req.params.id;
+  const clientDeleted = await deleteClient(clientId);
+  console.log(clientDeleted);
+  res.redirect("/admin/clients");
 });

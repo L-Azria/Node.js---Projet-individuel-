@@ -1,0 +1,53 @@
+doctype html
+html
+    head
+        title=Super
+        link(rel="stylesheet" href="/public/sass/css/pizzas.css")
+    body
+        header 
+            img(src="/public/logo.png", alt="")
+            nav 
+                a(href="/admin/users") Utilisateurs
+                a(href="/admin/pizzas" class="ok") Pizzas
+                a(href="/admin/menus") Menus
+                a(href="/admin/desserts") Desserts
+                a(href="/admin/boissons") Boissons
+                a(href="/admin/clients") Clients
+                a(href="/admin/commandes") Commandes
+                a(href="/admin/livreurs" class="ok") Livreurs
+                a(href="/admin/ingredients") Ingrédients
+                a(href="/admin/stats") Statistiques
+                a(href="/admin/promotions") Promotions
+        main
+
+            div(id=zonePrincipale)
+                button(type="submit") 
+                    a(href="/admin/clients/creer") Créer un nouveau client
+
+                table 
+                    tr(id="row1")
+                        th ID
+                        th Nom 
+                        th Prénom  
+                        th Adresse
+                        th Email
+                        th Mot de passe
+                        th Actions
+                        each client in clients 
+                            tr
+                                td #{client.id}
+                                td #{client.nom}
+                                td #{client.prenom}
+                                td #{client.adresse}
+                                td #{client.email}
+                                td #{client.motDePasse}
+                                    br
+                                    button(type="submit") 
+                                                a(href=`/admin/clients/reinitialiser/${client.id}`) Réinitialiser
+                                td(class="edit")  
+                                        button(type="submit") 
+                                            a(href=`/admin/clients/editer/${client.id}`) Editer
+                                        form(action=`/admin/clients/delete/${client.id}` method='POST' id="formdelete")
+                                            button(type="submit") Supprimer
+            div(id=zoneActivite)
+                p Zone activité

@@ -8,38 +8,42 @@ html
             img(src="/public/logo.png", alt="")
             nav 
                 a(href="/admin/users") Utilisateurs
-                a(href="/admin/pizzas") Pizzas
+                a(href="/admin/pizzas" class="ok") Pizzas
                 a(href="/admin/menus") Menus
                 a(href="/admin/desserts") Desserts
                 a(href="/admin/boissons") Boissons
                 a(href="/admin/clients") Clients
                 a(href="/admin/commandes") Commandes
-                a(href="/admin/livreurs") Livreurs
+                a(href="/admin/livreurs" class="ok") Livreurs
                 a(href="/admin/ingredients") Ingrédients
                 a(href="/admin/stats") Statistiques
                 a(href="/admin/promotions") Promotions
         main
-        a(href="/admin/pizzas") Retour à la page des pizzas
+            div(id=zonePrincipale)
+                button(type="submit")
+                    a(href="/admin/pizzas") Retour à la page des pizzas
 
-        h2 Nouvelle pizza
-        form(action="/admin/pizzas/creer", method="post") 
-            div 
-                label(for="code") Code 
-                input(type="text" name="code" id="code")
-            div
-                label(for="libelle") Libellé
-                input(type="text" name="libelle" id="libelle")
-            div
-                label(for="ingredients") Ingrédients
-                input(type="text" name="ingredients" id="ingredients")
-            div
-                label(for="categorie") Catégorie
-                input(type="text" name="categorie" id="categorie")
-            div
-                label(for="prix") Prix
-                input(type="text" name="prix" id="prix")
-            div
-                label(for="version_pizza") Version pizza
-                input(type="text" name="version" id="version_pizza")
-            div    
-                input(type="submit" name="creer" value="creer")
+                h2 Nouvelle pizza
+                form(action="/admin/pizzas/creer", method="post") 
+                    div 
+                        label(for="code") Code 
+                        input(type="text" name="code" id="code")
+                    div
+                        label(for="libelle") Libellé
+                        input(type="text" name="libelle" id="libelle")
+                    div
+                        label(for="ingredients") Ingrédients
+                        input(type="text" name="ingredients" id="ingredients")
+                    div
+                        label(for="categorie") Catégorie
+                        input(type="text" name="categorie" id="categorie")
+                    div
+                        label(for="prix") Prix
+                        input(type="text" name="prix" id="prix")
+                    div
+                        label(for="version_pizza") Version pizza
+                        input(type="text" name="version" id="version_pizza")
+                    div    
+                        input(type="submit" name="creer" value="creer")
+            div(id=zoneActivite)
+                p Zone activité

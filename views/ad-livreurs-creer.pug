@@ -1,0 +1,37 @@
+doctype html
+html
+    head
+        title=Super
+        link(rel="stylesheet" href="/public/sass/css/pizzas.css")
+    body
+        header 
+            img(src="/public/logo.png", alt="")
+            nav 
+                a(href="/admin/users") Utilisateurs
+                a(href="/admin/pizzas" class="ok") Pizzas
+                a(href="/admin/menus") Menus
+                a(href="/admin/desserts") Desserts
+                a(href="/admin/boissons") Boissons
+                a(href="/admin/clients") Clients
+                a(href="/admin/commandes") Commandes
+                a(href="/admin/livreurs" class="ok") Livreurs
+                a(href="/admin/ingredients") Ingrédients
+                a(href="/admin/stats") Statistiques
+                a(href="/admin/promotions") Promotions
+        main
+            div(id=zonePrincipale)
+                    button(type="submit")
+                        a(href="/admin/livreurs") Retour à la page des livreurs
+
+                    h2 Nouveau livreur
+                    form(action="/admin/livreurs/creer", method="post") 
+                        div 
+                            label(for="nom") Nom 
+                            input(type="text" name="nom" id="nom")
+                        div
+                            label(for="prenom") Prénom
+                            input(type="text" name="prenom" id="prenom")
+                        div    
+                            input(type="submit" name="creer" value="creer")
+            div(id=zoneActivite)
+                    p Zone activité

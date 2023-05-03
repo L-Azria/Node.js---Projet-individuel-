@@ -9,6 +9,7 @@ header {
   nav {
     border: 1px solid gray;
     margin-left: 1rem;
+    padding: 10px;
   }
   a {
     color: black;
@@ -17,15 +18,22 @@ header {
     padding: 0.5rem;
     font-size: 1.5rem;
   }
+  a:hover {
+    border-top: 2px solid green;
+  }
 
   img {
     width: 4rem;
+  }
+
+  .ok {
+    background-color: rgb(123, 178, 123);
   }
 }
 
 main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
 
   button {
@@ -43,5 +51,18 @@ main {
     #row1 {
       background-color: rgb(40, 188, 40);
     }
+  }
+
+  > div:nth-child(1) {
+    border: 1px solid black;
+    width: 75%;
+    padding: 1rem;
+    margin-right: 4px;
+  }
+  > div:nth-child(2) {
+    width: 17%;
+    background-color: gray;
+    border: 1px solid black;
+    text-align: center;
   }
 }
