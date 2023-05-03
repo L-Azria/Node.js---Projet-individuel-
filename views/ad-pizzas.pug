@@ -1,0 +1,48 @@
+doctype html
+html
+    head
+        title=Super
+        link(rel="stylesheet" href="/public/sass/css/pizzas.css")
+    body
+        header 
+            img(src="/public/logo.png", alt="")
+            nav 
+                a(href="/admin/users") Utilisateurs
+                a(href="/admin/pizzas") Pizzas
+                a(href="/admin/menus") Menus
+                a(href="/admin/desserts") Desserts
+                a(href="/admin/boissons") Boissons
+                a(href="/admin/clients") Clients
+                a(href="/admin/commandes") Commandes
+                a(href="/admin/livreurs") Livreurs
+                a(href="/admin/ingredients") Ingrédients
+                a(href="/admin/stats") Statistiques
+                a(href="/admin/promotions") Promotions
+        main 
+            button(type="submit") 
+                a(href="/admin/pizzas/creer") Créer une nouvelle pizza
+
+            table 
+                tr(id="row1")
+                    th ID
+                    th Code 
+                    th Libellé  
+                    th Ingrédients
+                    th Catégorie 
+                    th Prix 
+                    th Version pizza
+                    th Actions
+                    each pizza in pizzas 
+                        tr
+                            td #{pizza.id}
+                            td #{pizza.code}
+                            td #{pizza.libelle}
+                            td #{pizza.ingredients}
+                            td #{pizza.categorie}
+                            td #{pizza.prix} €
+                            td #{pizza.version_pizza} 
+                            td(class="edit")  
+                                    button(type="submit") 
+                                        a(href="") Editer
+                                    button(type="submit") 
+                                        a(href="") Supprimer

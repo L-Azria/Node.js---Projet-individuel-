@@ -1,0 +1,49 @@
+body {
+  background-color: beige;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  nav {
+    border: 1px solid gray;
+    margin-left: 1rem;
+  }
+  a {
+    color: black;
+    text-decoration: none;
+
+    padding: 0.5rem;
+    font-size: 1.5rem;
+  }
+
+  img {
+    width: 4rem;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  div:nth-child(1) {
+    width: 73%;
+    border: 1px solid gray;
+    text-align: center;
+  }
+  div:nth-child(2) {
+    width: 23%;
+    border: 1px solid gray;
+    text-align: center;
+  }
+  table {
+    border: 1px solid gray;
+    width: 80%;
+    text-align: left;
+    #row1 {
+      background-color: rgb(40, 188, 40);
+    }
+  }
+}
