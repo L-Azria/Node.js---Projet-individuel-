@@ -2,22 +2,21 @@
 
 L'objectif du projet est de réaliser un système de gestion d'une pizzeria avec deux applications :
 
-* Une application d'administration des données utilisée par les gestionnaires de la pizzeria
+- Une application d'administration des données utilisée par les gestionnaires de la pizzeria
 
 ![](issues/admin/images/usa002.png)
 
-* Une application utilisée par des clients pour effectuer des commandes
+- Une application utilisée par des clients pour effectuer des commandes
 
 ![](issues/web/images/usw001.png)
 
-
 ## Contraintes techniques
 
-* Les données sont sauvegardées dans une base de données (relationnelle ou non)
-* L'application d'administration est réalisée en multi-pages (génération de pages côté serveur)
-* L'application Web destinée aux clients, vous avez le choix :
-    * soit une application multi-pages
-    * soit une application basée sur une seule page (Single Page Application)
+- Les données sont sauvegardées dans une base de données (relationnelle ou non)
+- L'application d'administration est réalisée en multi-pages (génération de pages côté serveur)
+- L'application Web destinée aux clients, vous avez le choix :
+  - soit une application multi-pages
+  - soit une application basée sur une seule page (Single Page Application)
 
 ## Fonctionnalités à développer
 
@@ -36,11 +35,11 @@ Les écrans ne sont pas contractuelles, n'hésitez pas à être force de proposi
 ### Administration
 
 - [ ] [USA001 - Authentification - Page Login](issues/admin/usa001.md)
-- [ ] :dart: [USA002 - Menu](issues/admin/usa002.md)
+- [x] :dart: [USA002 - Menu](issues/admin/usa002.md)
 - [ ] [USA003 - Utilisateur - CRUD](issues/admin/usa003.md)
-- [ ] :dart: [USA004 - Pizza - CRUD](issues/admin/usa004.md)
-- [ ] :dart: [USA005 - Livreur - CRUD](issues/admin/usa005.md)
-- [ ] :dart: [USA006 - Client - CRUD](issues/admin/usa006.md)
+- [x] :dart: [USA004 - Pizza - CRUD](issues/admin/usa004.md)
+- [x] :dart: [USA005 - Livreur - CRUD](issues/admin/usa005.md)
+- [x] :dart: [USA006 - Client - CRUD](issues/admin/usa006.md)
 - [ ] :dart: [USA007 - Commande - CRUD](issues/admin/usa007.md)
 - [ ] [USA008 - Statistiques (temps réel)](issues/admin/usa008.md)
 - [ ] [USA009 - Promotions - CRUD](issues/admin/usa009.md)
@@ -51,7 +50,6 @@ Les écrans ne sont pas contractuelles, n'hésitez pas à être force de proposi
 - [ ] [USA014 - Desserts - CRUD](issues/admin/usa014.md)
 - [ ] [USA015 - Menu - CRUD](issues/admin/usa015.md)
 - [ ] [USA016 - Gestion des stocks (temps réel)](issues/admin/usa016.md)
-
 
 ### Client
 
