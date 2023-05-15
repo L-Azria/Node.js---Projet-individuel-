@@ -103,23 +103,41 @@ async function deleteLivreur(id) {
 
 //fonction : permet d'accéder aux données à volonté
 async function listClients() {
-  const [rows] = await promisePool.execute("select * from clients");
-  // console.log(rows);
-  return rows;
-}
-// creer de nouveaux clients
-async function newClient(nom, prenom, adresse, email, motDePasse) {
   const [rows] = await promisePool.execute(
-    "insert into clients (nom, prenom, adresse, email, motDePasse) values(?,?,?,?,?)",
-    [nom, prenom, adresse, email, motDePasse]
+    "select cl.*, ad.adresse, ad.id as ad_id from clients as cl LEFT JOIN clients_adresses as ca ON cl.id = ca.clients_id LEFT JOIN adresses as ad ON ad.id=ca.adresses_id"
   );
+  //console.log(`List clients`, rows);
   return rows;
 }
 
+// creer de nouveaux clients
+async function newClient(nom, prenom, adresse, email, motDePasse) {
+  const [insertClient] = await promisePool.execute(
+    "insert into clients (nom, prenom, email, motDePasse) values(?,?,?,?)",
+    [nom, prenom, email, motDePasse]
+  );
+  //Récupérer l'ID du nouveau client inséré
+  const clientId = insertClient.insertId;
+  //console.log(`clientId`, clientId);
+  const [insertAdresse] = await promisePool.execute(
+    "INSERT INTO adresses (adresse) VALUES (?)",
+    [adresse]
+  );
+  // Récupérer l'ID de la nouvelle adresse insérée
+  const adresseId = insertAdresse.insertId;
+  //console.log(`adresseId`, adresseId);
+  const [link] = await promisePool.execute(
+    "INSERT INTO clients_adresses (clients_id, adresses_id) VALUES (?, ?)",
+    [clientId, adresseId]
+  );
+  return link;
+}
+
 // editer un client
+
 async function editClient(id, nom, prenom, adresse, email, motDePasse) {
-  const [rows] = await promisePool.execute(
-    "UPDATE clients SET nom=?, prenom=?, adresse=?, email=?, motDePasse=? where id=?",
+  const [editedClient] = await promisePool.execute(
+    `UPDATE clients as cl LEFT JOIN clients_adresses as ca ON cl.id = ca.clients_id LEFT JOIN adresses as ad ON ad.id=ca.adresses_id SET cl.nom=?, cl.prenom=?, ad.adresse=?, cl.email=?, cl.motDePasse=? WHERE cl.id=?`,
     [nom, prenom, adresse, email, motDePasse, id]
   );
 }
@@ -129,6 +147,14 @@ async function deleteClient(id) {
   const [row] = await promisePool.execute("delete from clients where id=?", [
     id,
   ]);
+}
+
+// réinitialiser un MdP
+async function reinitialiserMdP(id, motDePasse) {
+  const [rows] = await promisePool.execute(
+    "UPDATE clients SET motDePasse=? where id=?",
+    [motDePasse, id]
+  );
 }
 
 // PARTIE WEB
@@ -154,7 +180,7 @@ app.get("/admin/users", async (req, res) => {
 //page pizzas
 app.get("/admin/pizzas", async (req, res) => {
   const allPizzas = await listPizzas();
-  console.log(allPizzas);
+  //console.log(allPizzas);
   res.render("ad-pizzas", { pizzas: allPizzas });
 });
 
@@ -181,7 +207,7 @@ app.post("/admin/pizzas/creer", async (req, res) => {
     newPizzaPrix,
     newPizzaVersion
   );
-  console.log(`newPizza`);
+  //console.log(`newPizza`);
   res.redirect("/admin/pizzas");
 });
 
@@ -191,14 +217,14 @@ app.get("/admin/pizzas/editer/:id", async (req, res) => {
     `select * FROM pizzas where id=?`,
     [req.params.id]
   );
-  console.log(getPizzaToEdit);
+  //console.log(getPizzaToEdit);
 
   res.render("ad-pizzas-editer", { pizzas: getPizzaToEdit });
 });
 
 //récuperer la requête d'editer une pizza
 app.post("/admin/pizzas/editer/:id", async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const editedPizzaCode = req.body.code;
   const editedPizzaLibelle = req.body.libelle;
   const editedPizzaIngredients = req.body.ingredients;
@@ -220,7 +246,7 @@ app.post("/admin/pizzas/editer/:id", async (req, res) => {
 app.post("/admin/pizzas/delete/:id", async (req, res) => {
   const pizzaId = req.params.id;
   const pizzaDeleted = await deletePizza(pizzaId);
-  console.log(pizzaDeleted);
+  //console.log(pizzaDeleted);
   res.redirect("/admin/pizzas");
 });
 
@@ -228,14 +254,14 @@ app.post("/admin/pizzas/delete/:id", async (req, res) => {
 //page livreurs
 app.get("/admin/livreurs", async (req, res) => {
   const allLivreurs = await listLivreurs();
-  console.log(allLivreurs);
+  //console.log(allLivreurs);
   res.render("ad-livreurs", { livreurs: allLivreurs });
 });
 
 //page creer un livreurs
 app.get("/admin/livreurs/creer", async (req, res) => {
   const allLivreurs = await listLivreurs();
-  console.log(allLivreurs);
+  //console.log(allLivreurs);
   res.render("ad-livreurs-creer", { livreurs: allLivreurs });
 });
 
@@ -244,7 +270,7 @@ app.post("/admin/livreurs/creer", async (req, res) => {
   const newLivreurNom = req.body.nom;
   const newLivreurPrenom = req.body.prenom;
   const livreurAdded = await newLivreur(newLivreurNom, newLivreurPrenom);
-  console.log(`livreurAdded`);
+  //console.log(`livreurAdded`);
   res.redirect("/admin/livreurs");
 });
 
@@ -254,14 +280,14 @@ app.get("/admin/livreurs/editer/:id", async (req, res) => {
     `select * FROM livreurs where id=?`,
     [req.params.id]
   );
-  console.log(getLivreurToEdit);
+  //console.log(getLivreurToEdit);
 
   res.render("ad-livreurs-editer", { livreurs: getLivreurToEdit });
 });
 
 //récuperer la requête d'editer un livreur
 app.post("/admin/livreurs/editer/:id", async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const editedLivreurId = req.params.id;
   const editedLivreurNom = req.body.nom;
   const editedLivreurPrenom = req.body.prenom;
@@ -277,7 +303,7 @@ app.post("/admin/livreurs/editer/:id", async (req, res) => {
 app.post("/admin/livreurs/delete/:id", async (req, res) => {
   const livreurId = req.params.id;
   const livreurDeleted = await deleteLivreur(livreurId);
-  console.log(livreurDeleted);
+  //console.log(livreurDeleted);
   res.redirect("/admin/livreurs");
 });
 
@@ -286,15 +312,19 @@ app.post("/admin/livreurs/delete/:id", async (req, res) => {
 //page clients
 app.get("/admin/clients", async (req, res) => {
   const allClients = await listClients();
-  console.log(allClients);
-  res.render("ad-clients", { clients: allClients });
+  //console.log(allClients);
+  res.render("ad-clients", {
+    clients: allClients,
+  });
 });
 
 //page creer un client
 app.get("/admin/clients/creer", async (req, res) => {
-  const allClients = await listClients();
-  console.log(allClients);
-  res.render("ad-clients-creer", { clients: allClients });
+  //const allClients = await listClients();
+  //console.log(allClients);
+  res.render("ad-clients-creer", {
+    //clients: allClients,
+  });
 });
 
 //récuperer la requête de création d'un client
@@ -303,11 +333,10 @@ app.post("/admin/clients/creer", async (req, res) => {
   const newClientPrenom = req.body.prenom;
   const newClientAdresse = req.body.adresse;
   const newClientEmail = req.body.email;
-  //  const newClientMotDePasse = req.body.motDePasse;
-
+  //Les mots de passe sont chiffrés (algorithme de chiffrement BCrypt)
   const salt = bcrypt.genSaltSync(saltRounds);
   const newClientMotDePasse = bcrypt.hashSync(req.body.motDePasse, salt);
-
+  console.log(`Console log requête création client :`, req.body);
   const clientAdded = await newClient(
     newCLientNom,
     newClientPrenom,
@@ -315,14 +344,13 @@ app.post("/admin/clients/creer", async (req, res) => {
     newClientEmail,
     newClientMotDePasse
   );
-  console.log(`clientAdded`);
   res.redirect("/admin/clients");
 });
 
 //page editer un client
 app.get("/admin/clients/editer/:id", async (req, res) => {
   const [[getClientToEdit]] = await promisePool.execute(
-    `select * FROM clients where id=?`,
+    `select cl.*, ad.adresse, ad.id as ad_id from clients as cl LEFT JOIN clients_adresses as ca ON cl.id = ca.clients_id LEFT JOIN adresses as ad ON ad.id=ca.adresses_id where cl.id=?`,
     [req.params.id]
   );
   console.log(getClientToEdit);
@@ -332,7 +360,7 @@ app.get("/admin/clients/editer/:id", async (req, res) => {
 
 //récuperer la requête d'editer un client
 app.post("/admin/clients/editer/:id", async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const editedClientId = req.params.id;
   const editedClientNom = req.body.nom;
   const editedClientPrenom = req.body.prenom;
@@ -354,6 +382,6 @@ app.post("/admin/clients/editer/:id", async (req, res) => {
 app.post("/admin/clients/delete/:id", async (req, res) => {
   const clientId = req.params.id;
   const clientDeleted = await deleteClient(clientId);
-  console.log(clientDeleted);
+  //console.log(clientDeleted);
   res.redirect("/admin/clients");
 });
