@@ -143,18 +143,18 @@ async function editClient(id, nom, prenom, adresse, email, motDePasse) {
 }
 
 //supprimer un client
+async function deleteClientAdresse(clients_id) {
+  const [rows] = await promisePool.execute(
+    `DELETE FROM clients_adresses WHERE clients_id=?`,
+    [clients_id]
+  );
+  return rows;
+}
 async function deleteClient(id) {
-  const [row] = await promisePool.execute("delete from clients where id=?", [
+  const [row] = await promisePool.execute(`DELETE FROM clients WHERE id=?`, [
     id,
   ]);
-}
-
-// réinitialiser un MdP
-async function reinitialiserMdP(id, motDePasse) {
-  const [rows] = await promisePool.execute(
-    "UPDATE clients SET motDePasse=? where id=?",
-    [motDePasse, id]
-  );
+  return row;
 }
 
 // PARTIE WEB
@@ -381,6 +381,7 @@ app.post("/admin/clients/editer/:id", async (req, res) => {
 //supppression d'un client
 app.post("/admin/clients/delete/:id", async (req, res) => {
   const clientId = req.params.id;
+  const clientAdresseDeleted = await deleteClientAdresse(clientId);
   const clientDeleted = await deleteClient(clientId);
   //console.log(clientDeleted);
   res.redirect("/admin/clients");
